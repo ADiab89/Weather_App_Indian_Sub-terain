@@ -3,13 +3,18 @@ library(shinythemes)
 library(leaflet)
 library(owmr)
 library(ggplot2)
-library(gganimate)
 library(plyr)
 library(ggthemes)
 library(dplyr)
 library(yarrr)
-library(ggmap)
 
+
+
+
+## Set the working directory
+
+
+setwd("C:/Users/Richie/Desktop/WeatherApp")
 
 ## Set the API key with Open Weather Map
 
@@ -107,92 +112,58 @@ server<-shinyServer(function(input,output){
   
   output$plot1<-renderImage({
     
-    ## Load the data for each  location and clean
-    outfile <- tempfile(fileext='.gif')
-    
-    get_data<-function(i){
-      location_df<-read.csv(i,stringsAsFactors = FALSE)
-      clean_df<-location_df[,c(-1,-2,-5,-7,-9,-10,-11,-13,-15,-16,-17,-22,-23)]
-      
-      
-      
-      ## User defined fucntion to convert farenheit to celcius
-      
-      celcius<-function(x){
-        c=(x-32)/1.8
-        return(c)
-      }
-      
-      
-      
-      ## Replace the "*" by gsub
-      
-      clean_df$MAX<-gsub("[*].*$","",clean_df$MAX)
-      clean_df$MIN<-gsub("[*].*$","",clean_df$MIN)
-      
-      ## Convert the temperature to Celcius
-      
-      clean_df$TEMP<-celcius(clean_df$TEMP)
-      clean_df$DEWP<-celcius(clean_df$DEWP)
-      clean_df$MAX<-celcius(as.numeric(clean_df$MAX))
-      clean_df$MIN<-celcius(as.numeric(clean_df$MIN))
-      
-      
-      ## Convert the dates into character in order to split the coloumn into dd mm yy columns
-      clean_df$YEARMODA<-as.Date(as.character(clean_df$YEARMODA),format="%Y%m%d")
-      
-      list<-strsplit(as.character(clean_df$YEARMODA),"-")
-      ## Convert the list intok dataframe
-      library(plyr)
-      Date<-ldply(list)
-      colnames(Date)<-c("Year","Month","Day")
-      
-      ## Column bind with the main dataframe
-      clean_df<-cbind(clean_df,Date)
-      ## Change the Date to numeric
-      clean_df$Year=as.numeric(clean_df$Year)
-      
-      
-      ## Return the final Dataset
-      return(clean_df)
-    }
-    
+  
     ## Get the clean data
   
-    Station<-get_data(as.character(paste(input$station,".csv",sep="")))
+    #Station<-get_data(as.character(paste(input$station,".csv",sep="")))
+   # rm(Station)
+  #  Station<-get_data("Dehradun.csv")
+   #   
     
+    #p2<-ggplot(Station, aes(x=Month, y=TEMP, color=factor(Month))) +
+     #geom_boxplot()+
+      #geom_boxplot(aes(frame = factor(Year)))+
+      #xlab("Months")+
+      #ylab("Average Temperature")+
+      #ggtitle("Average Temperature for last 4 Years")+
+      #theme(panel.border = element_blank(),
+       #    panel.background = element_rect(fill="#b6e5af"),
+        #  panel.grid.major = element_blank(),
+         #panel.grid.minor = element_blank(),
+        #  plot.title = element_text(hjust = 0.5,size=18,colour="indianred4"),
+        # axis.line = element_line(colour = "black"))+
+      #theme(legend.position="none")
+    
+    
+    
+   #gganimate(p2,"Dehradun.gif")
+    
+  # Return a list containing the filename
+    if(input$station == "Gangtok"){
+    
+      return(list(src="Gangtok.gif",contentType = 'image/gif',height=450))
+      }
+    if(input$station == "Leh"){
+      return(list(src="Leh.gif",contentType = 'image/gif',height=450))
+    }
+    if(input$station == "Bikaner"){
+      return(list(src="Bikaner.gif",contentType = 'image/gif',height=450))
+    }
+    if(input$station == "Srinagar"){
+      return(list(src="Srinagar.gif",contentType = 'image/gif',height=450))
+    }
+    if(input$station == "Bangalore"){
+      return(list(src="Bangalore.gif",contentType = 'image/gif',height=450))
+    }
+    if(input$station == "Kolkata"){
+      return(list(src="Kolkata.gif",contentType = 'image/gif',height=450))
+    }
+    else{return(list(src="Dehradun.gif",contentType = 'image/gif',height=450))}
+    
+ 
+    
+  },deleteFile = FALSE)     
       
-    
-    ## gganimate
-    p2<-ggplot(Station, aes(x=Month, y=TEMP, color=factor(Month))) +
-      geom_boxplot()+
-      geom_boxplot(aes(frame = factor(Year)))+
-      xlab("Months")+
-      ylab("Average Temperature")+
-      ggtitle("Average Temperature for last 4 Years")+
-      theme(panel.border = element_blank(),
-            panel.background = element_rect(fill=as.character(paste(input$color))),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            plot.title = element_text(hjust = 0.5,size=18,colour="indianred4"),
-            axis.line = element_line(colour = "black"))+
-      theme(legend.position="none")
-    
-    
-    
-    gganimate(p2,"outfile.gif")
-    
-    
-    # Return a list containing the filename
-    list(src = "outfile.gif",
-         contentType = 'image/gif',
-          width = 500,
-          height = 450
-         # alt = "This is alternate text"
-    )}, 
-    
-    
-    deleteFile = TRUE)
   
   
   output$yarrplot1<-renderPlot({
@@ -245,88 +216,94 @@ server<-shinyServer(function(input,output){
   
   output$plot2<-renderImage({
     
-    source("script.R")
+    #source("script.R")
     ## Create temporary gif file
-    outfile1 <- tempfile(fileext='.gif')
+   
     
 ## Load the saved India Map
     
-     saveRDS(LocationMap, file = "Map")
-     x <- readRDS("Map")
-     ggmap(x)
+    ##Locationcenter=as.numeric(c(78.96288 ,20.59368) )
+    ##map<-get_map(location = Locationcenter,scale=1,zoom=4)
+    ##saveRDS(map,"map")
+    #x <- readRDS("map")
+    
   
     ## Get the data loaded
     
     
-    kol_data<-get_data("Kolkata.csv")
-    Leh_data<-get_data("Leh.csv")
-    Bikaner_data<-get_data("Bikaner.csv")
-    Dehradun_data<-get_data("Dehradun.csv")
-    Gangtok_data<-get_data("Gangtok.csv")
-    Bangalore_data<-get_data("Bangalore.csv")
+   # kol_data<-get_data("Kolkata.csv")
+    #Leh_data<-get_data("Leh.csv")
+    #Bikaner_data<-get_data("Bikaner.csv")
+    #Dehradun_data<-get_data("Dehradun.csv")
+    #Gangtok_data<-get_data("Gangtok.csv")
+    #Bangalore_data<-get_data("Bangalore.csv")
     
     # Get the latitude and longitude for the location and merge it with the dataset
     
-    kol<-mutate(kol_data,City="Kolkata",lat=India_Fav_df[9,2],lon=India_Fav_df[9,3])
-    Leh<-mutate(Leh_data,City="Leh",lat=India_Fav_df[1,2],lon=India_Fav_df[1,3])
-    Bikaner<-mutate(Bikaner_data,City="Bikaner",lat=India_Fav_df[2,2],lon=India_Fav_df[2,3])
-    Dehradun<-mutate(Dehradun_data,City="Dehradun",lat=30.31649,lon=78.03129)
-    Gangtok<-mutate(Gangtok_data,City="Gangtok",lat=India_Fav_df[7,2],lon=India_Fav_df[7,3])
-    Bangalore<-mutate(Bangalore_data,City="Bangalore",lat=India_Fav_df[11,2],lon=India_Fav_df[11,3])
+    #kol<-mutate(kol_data,City="Kolkata",lat=India_Fav_df[9,2],lon=India_Fav_df[9,3])
+    #Leh<-mutate(Leh_data,City="Leh",lat=India_Fav_df[1,2],lon=India_Fav_df[1,3])
+    #Bikaner<-mutate(Bikaner_data,City="Bikaner",lat=India_Fav_df[2,2],lon=India_Fav_df[2,3])
+    #Dehradun<-mutate(Dehradun_data,City="Dehradun",lat=30.31649,lon=78.03129)
+    #Gangtok<-mutate(Gangtok_data,City="Gangtok",lat=India_Fav_df[7,2],lon=India_Fav_df[7,3])
+    #Bangalore<-mutate(Bangalore_data,City="Bangalore",lat=India_Fav_df[11,2],lon=India_Fav_df[11,3])
     
     ## Row bind all the cities together
     
-    Master_data<-rbind(kol,Leh,Bikaner,Dehradun,Gangtok,Bangalore)
+    #Master_data<-rbind(kol,Leh,Bikaner,Dehradun,Gangtok,Bangalore)
     
     ## Get mean temperature
     
-    Mean_Temp_India<-mean(Master_data$TEMP)
+    #Mean_Temp_India<-mean(Master_data$TEMP)
     
     ## Get the regions with temperature higher than average temperature
     
-    Region_AboveMean<-Master_data[Master_data$TEMP>=Mean_Temp_India,]
+    #Region_AboveMean<-Master_data[Master_data$TEMP>=Mean_Temp_India,]
     
     ## Get the Region with temperature lower than average temperature
     
-    Region_BelowMean<-Master_data[Master_data$TEMP<Mean_Temp_India,]
+    #Region_BelowMean<-Master_data[Master_data$TEMP<Mean_Temp_India,]
     
     ## Plot it on the map with the help of ggplot
     
     
-    p3 <- ggmap(x) + geom_point(data = if(input$Temperature=="Above Mean Temp of 4 years"){Region_AboveMean}else{Region_BelowMean}, 
-                                  aes(x = lon, y = lat,size=30,color=City, 
-                                      frame = Year))+
-      
-      ggtitle("Average Temperature for last 4 Years")+
-      theme(panel.border = element_blank(),
-            panel.background = element_rect(fill=as.character(paste(input$color))),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            plot.title = element_text(hjust = 0.5,size=18,colour="indianred4"),
-            axis.line = element_line(colour = "black"))+
-      theme(legend.position="none")
+    #p3 <- ggmap(x,extent='device') + geom_point(data = Region_BelowMean, 
+     #                             aes(x = lon, y = lat,size=30,color=City, 
+      #                                frame = Year))+
+      #
+      #ggtitle("Average Temperature for last 4 Years")+
+      #theme(panel.border = element_blank(),
+            
+       #     panel.grid.major = element_blank(),
+        #    panel.grid.minor = element_blank(),
+         #   plot.title = element_text(hjust = 0.5,size=18,colour="indianred4"),
+        #    axis.line = element_line(colour = "black"))+
+      #theme(legend.position="none")
     
   
-    gganimate(p3,"outfile1.gif")
+  #  gganimate(p3,"India_BelowMean.gif")
     
     
     # Return a list containing the filename
-    list(src = "outfile1.gif",
-         contentType = 'image/gif',
-         width = 500,
-         height = 400
-         # alt = "This is alternate text"
-    )}, 
+    if(input$Temperature == "Above Mean Temp of 4 years"){
+      
+      return(list(src = "India_AboveMean.gif",
+                  contentType = 'image/gif',
+                  width = 500,
+                  height = 400
+      ))
+    }
+    
+    else{return(list(src = "India_BelowMean.gif",
+                     contentType = 'image/gif',
+                     width = 500,
+                     height = 400
+    ))}
+          
+    }, 
     
     
-    deleteFile = TRUE)
-    
-    
-    
-    
-    
-    
-  
+    deleteFile = FALSE)
+
   
 })
 

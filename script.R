@@ -11,6 +11,7 @@ library(gganimate)
 library(gganimate)
 library(ggplot2)
 library(yarrr)
+library(devtools)
 ## Set the API key with Open Weather Map
 
 API_Key<-owmr_settings("0183f77e04642b59be717ba83a840141")

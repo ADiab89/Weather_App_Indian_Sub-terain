@@ -3,11 +3,11 @@ library(shinythemes)
 library(leaflet)
 library(owmr)
 library(ggplot2)
-library(gganimate)
 library(plyr)
 library(dplyr)
 library(yarrr)
-library(ggmap)
+
+
 shinyUI(fluidPage(theme = shinytheme('cerulean'),
                   
                   navbarPage(  title = "Indian Terrain Climate",  
@@ -73,8 +73,8 @@ shinyUI(fluidPage(theme = shinytheme('cerulean'),
                                ## Next Panel
                                
                                tabPanel("Data and Source Code",value = "Resources",
-                                        fluidRow(column(12,style="background-color:#D5F5E3;"
-                                                        ))
+                                        fluidRow(column(12,style="background-color:#D5F5E3;",
+                                                        includeMarkdown("source.rmd")))
                                         
                                         
                                )
